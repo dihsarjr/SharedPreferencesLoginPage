@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login_page/sign_up.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignUp(),
+      home: MyHomePage(),
     );
   }
 }
@@ -27,10 +28,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController emailController = null;
-  final TextEditingController passwordController = null;
+  String _mail = '';
+  String _pass = '';
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
+
   String _email;
   String _password;
 
@@ -38,13 +43,34 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (formKey.currentState.validate()) {
         formKey.currentState.save();
-        print(emailController);
-        print(passwordController);
+        final emailCont = emailController.text;
+        final passCont = passwordController.text;
 
-        if (_email != null && _password != null) {
-          print('object');
-        }
+        _loadCounter();
+
+        print(emailCont);
+        print(passCont);
+        print(_mail);
+        print(_pass);
+        if (emailCont == _mail && passCont == _pass) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SignUp()));
+        } else {}
       }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _mail = (prefs.getString('email') ?? '');
+      _pass = (prefs.getString('password') ?? '');
     });
   }
 
@@ -93,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       val.length < 6 ? 'Password too short' : null,
                   onSaved: (val) => _password = val,
                   controller: passwordController,
-                  obscureText: true,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 25),
@@ -111,16 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Center(
                           child: Padding(
                         padding: const EdgeInsets.all(8),
-                        child: _email != null
-                            ? Icon(
-                                Icons.refresh,
-                                color: Colors.white,
-                              )
-                            : Text(
-                                'Login',
-                                style: TextStyle(
-                                    fontSize: 25, color: Colors.white),
-                              ),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
                       )),
                     ),
                   ),
@@ -136,7 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     FlatButton(
                       padding: EdgeInsets.all(0),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => SignUp()));
+                      },
                       child: Text(
                         'Sign Up',
                         style: TextStyle(fontSize: 15, color: Colors.blue),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:login_page/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
@@ -8,6 +9,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  String _email = '';
+  String _pass = '';
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
 
@@ -30,15 +33,19 @@ class _SignUpState extends State<SignUp> {
         print(passwordController);
 
         addStringToSF();
+        _loadCounter();
+
+//        Navigator.push(
+//            context, MaterialPageRoute(builder: (context) => MyHomePage()));
       }
     });
   }
 
   addStringToSF() async {
-    String names = nameController.toString();
-    String lastName = lastNameController.toString();
-    String email = emailController.toString();
-    String password = passwordController.toString();
+    String names = nameController.text;
+    String lastName = lastNameController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('name', names);
     prefs.setString('lastName', lastName);
@@ -47,10 +54,22 @@ class _SignUpState extends State<SignUp> {
 
     print(names);
     print(lastName);
-
     print(email);
-
     print(password);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _email = (prefs.getString('email') ?? '');
+      _pass = (prefs.getString('password') ?? '');
+    });
   }
 
   @override
@@ -150,7 +169,12 @@ class _SignUpState extends State<SignUp> {
                     Padding(
                       padding: const EdgeInsets.all(0),
                       child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyHomePage()));
+                          },
                           padding: EdgeInsets.all(0),
                           child: Text(
                             'Login',
@@ -158,7 +182,9 @@ class _SignUpState extends State<SignUp> {
                           )),
                     ),
                   ],
-                )
+                ),
+                Text(_email.toString()),
+                Text(_pass.toString())
               ],
             ),
           ),
