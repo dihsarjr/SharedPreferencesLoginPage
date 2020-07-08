@@ -28,8 +28,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController emailController = null;
   final TextEditingController passwordController = null;
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final formKey = GlobalKey<FormState>();
   String _email;
   String _password;
 
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 40,
                 ),
                 TextFormField(
-                  decoration: new InputDecoration(labelText: "Email"),
+                  decoration: InputDecoration(labelText: "Email"),
                   validator: (String val) =>
                       !val.contains('@') && !val.contains('.')
                           ? 'Invalid Email'
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: emailController,
                 ),
                 TextFormField(
-                  decoration: new InputDecoration(labelText: "Password"),
+                  decoration: InputDecoration(labelText: "Password"),
                   validator: (val) =>
                       val.length < 6 ? 'Password too short' : null,
                   onSaved: (val) => _password = val,
