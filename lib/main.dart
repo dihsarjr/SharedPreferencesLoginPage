@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:login_page/sign_up.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'home.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -30,6 +32,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String _mail = '';
   String _pass = '';
+  String emailCont = '';
+  String passCont = '';
+  String passError = '';
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -43,8 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (formKey.currentState.validate()) {
         formKey.currentState.save();
-        final emailCont = emailController.text;
-        final passCont = passwordController.text;
+        emailCont = emailController.text;
+        passCont = passwordController.text;
 
         _loadCounter();
 
@@ -54,8 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
         print(_pass);
         if (emailCont == _mail && passCont == _pass) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignUp()));
-        } else {}
+              context, MaterialPageRoute(builder: (context) => HomePageOne()));
+        } else {
+          passError = 'invalid email and password';
+        }
+      } else {
+        passError = 'invalid email and password';
       }
     });
   }
@@ -166,6 +175,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
+                Center(
+                  child: Container(
+                      child: emailCont != _mail &&
+                              passCont != _pass &&
+                              _email == null
+                          ? Text(
+                              passError,
+                              style: TextStyle(color: Colors.red, fontSize: 15),
+                            )
+                          : Container()),
+                )
               ],
             ),
           ),
